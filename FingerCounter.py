@@ -5,7 +5,6 @@ import time
 import autopy
 
 
-
 # Camera - Screen Size Declaration
 cam_width, cam_height = 640, 480
 screen_width, screen_height = autopy.screen.size()
@@ -27,8 +26,6 @@ fingers = []
 
 
 while True:
-
-# Landmarks - Hand
     success, img = cap.read()
     img = cv2.flip(img, 1)
 
@@ -37,10 +34,12 @@ while True:
         time.sleep(1) # Delay before retrying capture
         continue
 
+# Landmarks 
+    # Hand
     img = detector.findHands(img)
     Landmark_list, bbox = detector.findPosition(img)
 
-# Landmarks - Each Finger
+    # Each Finger
     if len(Landmark_list) != 0:
         x1, y1 = Landmark_list [8][1:]   # Index Finger
         x2, y2 = Landmark_list [12][1:]   # Middle Finger
@@ -49,9 +48,11 @@ while True:
         x5, y5 = Landmark_list [4][1:]   # Thumb
         #print(f'Thumb:{(x5,y5)}, Index{(x1,y1)}, Middle:{(x2,y2)}, Ring:{(x3,y3)}, Little:{(x4,y4)}')
 
+
 # Checking which finger is up
         fingers = detector.fingersUp()
         #print(fingers)
+
 
 # Counting Fingers - When up
     if len(fingers) >= 5:
@@ -78,6 +79,7 @@ while True:
             if i == 1:
                 _sum+=1
         
+
 # On Screen Text 
     # Total Fingers up - Displaying
         cv2.putText(img, 
@@ -103,6 +105,7 @@ while True:
                 (255, 255, 255),   # Color
                 1,   # Thickness
     )
+
 
 # Product 
     # Result Image - Display

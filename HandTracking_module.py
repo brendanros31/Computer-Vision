@@ -5,7 +5,6 @@ import math
 import numpy as np
 
 
-
 class handDetector():
 
     def __init__(self, mode=False, maxHands=2, model_complexity = 1, detection_confidence=0.5, tracking_confidence=0.5):
@@ -33,11 +32,8 @@ class handDetector():
 
 
     def findHands(self, img, draw=True):
-
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
-
-        # Results when hand is in view - Display 
         # print(results.multi_hand_landmarks)   
 
         # hand_Landmarks - Information Extraction
@@ -96,11 +92,11 @@ class handDetector():
                 if pointNo:
                     cv2.putText(img, 
                                 str(id), 
-                                (cx, cy), 
-                                cv2.FONT_HERSHEY_PLAIN, 
-                                3, 
-                                (0, 255, 0), 
-                                2
+                                (cx, cy),   # Position
+                                cv2.FONT_HERSHEY_DUPLEX,   # Font 
+                                3,   # Scale
+                                (0, 255, 0),   # Color
+                                2,   # Thickness
                     )
                     print(id, cx, cy)
 
@@ -154,7 +150,7 @@ def main():
     # Video Capture, Hand detection - Configurations
     cap = cv2.VideoCapture(0)
 
-    # Object - Initialization
+    # Object - Declaration
     detector = handDetector()
 
 
@@ -162,10 +158,13 @@ def main():
         success, img = cap.read()
         img = cv2.flip(img, 1)
         img = detector.findHands(img)
-        Landmark_list, bbox = detector.findPosition(img)
 
-        if len(Landmark_list) != 0:
-            print(Landmark_list[4])   # Printing Values of any Index
+        if not success:
+            print("Debug: Failed to capture frame from camera.")
+            continue
+
+        # Landmarks, Bbox - Hand
+        Landmark_list, bbox = detector.findPosition(img)
 
         # FPS - Configurations
         cTime = time.time()
@@ -175,11 +174,11 @@ def main():
         # FPS Text - Displaying
         cv2.putText(img, 
                     str(int(fps)), 
-                    (10,70),   # Position
-                    cv2.FONT_HERSHEY_PLAIN,   # Font]
-                    3,   # Scale
-                    (255,255,255),   # Color
-                    3,   # Thickness
+                    (10,70),
+                    cv2.FONT_HERSHEY_DUPLEX,
+                    1.5,
+                    (255,255,255),
+                    1,
         )
 
         # Result Image - Displaying
